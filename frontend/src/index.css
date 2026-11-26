@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-serif: 'Crimson Text', 'Iowan Old Style', Georgia, serif;
+  --color-paper: #f7f4ee;
+  --color-ink: #2a2723;
+  --color-muted: #6f6a61;
+  --color-line: #e2ddd3;
+  --color-accent: #8a4b2a;
+}
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-paper: #1c1b19;
+      --color-ink: #ebe6dc;
+      --color-muted: #a39d92;
+      --color-line: #34312c;
+      --color-accent: #d99a70;
+    }
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+}
