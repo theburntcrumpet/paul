@@ -1,6 +1,6 @@
 # Paul – Implementation Plan
 
-Status: **draft for review**. Nothing has been built yet. Open questions are listed at the end.
+Status: **M0 in progress.** Open questions are listed at the end.
 
 ---
 
@@ -102,7 +102,7 @@ books/{bookId}/exports/{timestamp}/…   (temporary, cleaned up)
 Each milestone is a **stack of small PRs** (each roughly 200–400 lines where possible). Every PR is based on the previous one and has its own tests, so you can review and merge from the bottom up. I'll keep each PR description focused: what changed, how to test it, screenshots for UI.
 
 ### M0 – Foundations
-1. **Repo scaffolding**: monorepo layout, `.gitignore`, `.editorconfig`, README, LICENSE (your choice), move specs into `docs/`.
+1. **Repo scaffolding**: monorepo layout, `.gitignore`, `.editorconfig`, README, move specs into `docs/`.
 2. **Backend skeleton**: Spring Boot, `./mvnw`, health endpoint, Flyway + SQLite, Spring Boot test setup, JaCoCo.
 3. **Frontend skeleton**: Vite + React + TS + Tailwind, ESLint/Prettier, Jest + React Testing Library, API client, responsive app shell (desktop sidebar / mobile bottom nav).
 4. **Containers**: multi-stage `Containerfile`, `compose.yaml` (paul + languagetool + volume), verified with `podman compose up` in WSL.

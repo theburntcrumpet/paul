@@ -1,0 +1,29 @@
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+
+# Java / Maven
+backend/target/
+!backend/.mvn/wrapper/maven-wrapper.jar
+
+# Node
+node_modules/
+frontend/dist/
+coverage/
+e2e/test-results/
+e2e/playwright-report/
+e2e/blob-report/
+e2e/.cache/
+
+# Runtime data
+data/
+*.db
+*.db-journal
+
+# Env / secrets
+.env
+.env.*
+!.env.example
