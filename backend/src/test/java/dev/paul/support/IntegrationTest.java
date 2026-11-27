@@ -22,7 +22,7 @@ import org.springframework.test.context.DynamicPropertySource;
 @AutoConfigureMockMvc
 public abstract class IntegrationTest {
 
-    protected static final Path dataDir = createDataDir();
+    public static final Path dataDir = createDataDir();
 
     @DynamicPropertySource
     static void dataDirProperties(DynamicPropertyRegistry registry) {
