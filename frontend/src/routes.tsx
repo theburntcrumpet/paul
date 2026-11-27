@@ -6,6 +6,7 @@ import { LibraryPage } from './pages/LibraryPage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { SettingsPage } from './pages/SettingsPage'
+import { UsersPage } from './pages/UsersPage'
 
 export const routes: RouteObject[] = [
   { path: 'login', element: <LoginPage /> },
@@ -18,6 +19,7 @@ export const routes: RouteObject[] = [
         children: [
           { index: true, element: <LibraryPage /> },
           { path: 'settings', element: <SettingsPage /> },
+          { path: 'settings/users', element: <UsersPage /> },
           { path: '*', element: <NotFoundPage /> },
         ],
       },

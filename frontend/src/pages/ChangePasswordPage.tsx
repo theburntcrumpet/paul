@@ -1,12 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { ApiError } from '../api/client'
+import { MIN_PASSWORD_LENGTH } from '../auth/passwords'
 import { FullPageMessage } from '../auth/RequireAuth'
 import { useChangePassword, useLogout, useMe } from '../auth/useAuth'
 import { Button, Field, FormError } from '../components/forms'
 import { AuthLayout } from './LoginPage'
-
-export const MIN_PASSWORD_LENGTH = 8
 
 /**
  * Change your own password. Users with an initial or reset password are sent here and cannot

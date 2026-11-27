@@ -31,6 +31,17 @@ export function SettingsPage() {
           </Button>
         </div>
       </div>
+
+      <h2 className="mt-8 text-sm font-medium tracking-wide text-muted uppercase">People</h2>
+      <Link
+        to="/settings/users"
+        className="mt-3 flex min-h-14 items-center justify-between rounded-lg border border-line p-4 hover:bg-line/40"
+      >
+        <span>Users</span>
+        <span aria-hidden="true" className="text-muted">
+          →
+        </span>
+      </Link>
     </section>
   )
 }
