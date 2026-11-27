@@ -33,3 +33,29 @@ cd frontend && npm install && npm run dev
 # full stack in containers (http://localhost:8080)
 podman-compose -f deploy/compose.yaml up --build
 ```
+
+### Tests
+
+```bash
+cd backend && ./mvnw verify          # unit + integration, JaCoCo gate (80% lines)
+cd frontend && npm run test:coverage # Jest + Testing Library
+cd e2e && npm ci && npx playwright install chromium && npx playwright test
+                                     # against a running stack (PAUL_BASE_URL, default :8080)
+```
+
+On Windows, use `mvnw.cmd` from PowerShell; the POSIX `mvnw` script does not work under Git Bash.
+
+### Podman on WSL
+
+Rootless podman in WSL has no systemd user session, so builds fail with
+`sd-bus call: Permission denied`. Switch podman to the cgroupfs manager once:
+
+```bash
+mkdir -p ~/.config/containers
+printf '[engine]\ncgroup_manager = "cgroupfs"\nevents_logger = "file"\n' >> ~/.config/containers/containers.conf
+```
+
+### Releases
+
+Pushing a `v*` tag publishes the image to `ghcr.io/theburntcrumpet/paul` and creates a GitHub
+Release with the runnable jar and `compose.yaml` attached.
