@@ -158,8 +158,9 @@ class AuthFlowTest extends IntegrationTest {
     }
 
     @Test
-    void logoutEndsTheSessionAndRevokesRememberMe() {
+    void logoutEndsTheSessionAndForgetsOnlyThisDevice() {
         clearForcedChange();
+        Cookie otherDevice = rememberMe(login(username, "second-password"));
         MvcTestResult login = login(username, "second-password");
         MockHttpSession session = session(login);
         Cookie cookie = rememberMe(login);
@@ -170,6 +171,20 @@ class AuthFlowTest extends IntegrationTest {
 
         assertThat(mvc.get().uri("/api/auth/me").session(session)).hasStatus(HttpStatus.UNAUTHORIZED);
         assertThat(mvc.get().uri("/api/auth/me").cookie(cookie)).hasStatus(HttpStatus.UNAUTHORIZED);
+        assertThat(mvc.get().uri("/api/auth/me").cookie(otherDevice)).hasStatusOk();
+    }
+
+    @Test
+    void logoutWithoutOrWithAGarbledRememberMeCookieStillSucceeds() {
+        clearForcedChange();
+        MockHttpSession session = session(login(username, "second-password"));
+
+        assertThat(mvc.post().uri("/api/auth/logout").session(session).with(csrf())).hasStatusOk();
+
+        MockHttpSession another = session(login(username, "second-password"));
+        assertThat(mvc.post().uri("/api/auth/logout").session(another).with(csrf())
+                        .cookie(new Cookie(SecurityConfig.REMEMBER_ME_COOKIE, "not-base64!")))
+                .hasStatusOk();
     }
 
     @Test

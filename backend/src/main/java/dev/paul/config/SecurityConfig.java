@@ -5,12 +5,14 @@ import java.util.HexFormat;
 
 import javax.sql.DataSource;
 
+import dev.paul.auth.DeviceRememberMeServices;
 import dev.paul.auth.JsonAuthResponses;
 import dev.paul.auth.PasswordChangeRequiredFilter;
 import dev.paul.user.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,7 +34,8 @@ import org.springframework.security.web.csrf.CsrfFilter;
  *
  * <ul>
  *   <li>JSON login at {@code POST /api/auth/login} (see {@code AuthController}), server-side session
- *   <li>persistent remember-me tokens, always issued at login, so devices stay signed in
+ *   <li>persistent remember-me tokens, always issued at login, so devices stay signed in;
+ *       signing out forgets only that device
  *   <li>cookie-to-header CSRF protection ({@code XSRF-TOKEN} cookie, {@code X-XSRF-TOKEN} header)
  *   <li>users with an initial or reset password can only change it until they do
  * </ul>
@@ -93,10 +96,11 @@ public class SecurityConfig {
             AppSettings settings,
             UserDetailsService userDetailsService,
             PersistentTokenRepository tokenRepository,
+            JdbcTemplate jdbc,
             SecurityProperties properties) {
         String key = settings.getOrCreate(REMEMBER_ME_KEY_SETTING, SecurityConfig::randomKey);
         PersistentTokenBasedRememberMeServices services =
-                new PersistentTokenBasedRememberMeServices(key, userDetailsService, tokenRepository);
+                new DeviceRememberMeServices(key, userDetailsService, tokenRepository, jdbc);
         services.setCookieName(REMEMBER_ME_COOKIE);
         services.setAlwaysRemember(true);
         services.setTokenValiditySeconds((int) properties.rememberMeValidity().toSeconds());
