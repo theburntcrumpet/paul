@@ -1,0 +1,10 @@
+.git
+**/node_modules
+**/dist
+**/coverage
+backend/target
+e2e
+data
+docs
+*.md
+!frontend/**/*.md

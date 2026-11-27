@@ -1,0 +1,38 @@
+# Paul – single image serving the API and the built SPA.
+# Build from the repository root:
+#   podman build -f deploy/Containerfile -t paul .
+
+# ---- 1. Frontend ------------------------------------------------------------
+FROM docker.io/library/node:26-bookworm-slim AS frontend
+WORKDIR /src/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY frontend/ ./
+RUN npm run build
+
+# ---- 2. Backend -------------------------------------------------------------
+FROM docker.io/library/eclipse-temurin:25-jdk AS backend
+WORKDIR /src/backend
+COPY backend/.mvn/ .mvn/
+COPY backend/mvnw backend/pom.xml ./
+RUN chmod +x mvnw && ./mvnw -B -q dependency:go-offline
+COPY backend/src/ src/
+# Replace the placeholder page with the real SPA build.
+RUN rm -rf src/main/resources/static
+COPY --from=frontend /src/frontend/dist/ src/main/resources/static/
+RUN ./mvnw -B -q package -DskipTests -Djacoco.skip=true \
+ && mv target/paul-*.jar /paul.jar
+
+# ---- 3. Runtime -------------------------------------------------------------
+FROM docker.io/library/eclipse-temurin:25-jre
+RUN groupadd --system paul && useradd --system --gid paul --home-dir /data paul \
+ && mkdir -p /data && chown paul:paul /data
+COPY --from=backend /paul.jar /app/paul.jar
+
+ENV PAUL_DATA_DIR=/data \
+    JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75"
+VOLUME ["/data"]
+EXPOSE 8080
+USER paul
+WORKDIR /app
+ENTRYPOINT ["java", "-jar", "/app/paul.jar"]
