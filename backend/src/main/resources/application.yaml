@@ -11,6 +11,8 @@ spring:
 
 paul:
   data-dir: ${PAUL_DATA_DIR:./data}
+  security:
+    initial-admin-password: ${PAUL_ADMIN_PASSWORD:admin}
 
 server:
   compression:
