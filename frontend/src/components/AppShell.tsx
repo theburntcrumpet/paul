@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { NavLink, Outlet } from 'react-router'
+import { NavLink, Outlet, useNavigate } from 'react-router'
 import { api } from '../api/client'
+import { useLogout, useMe } from '../auth/useAuth'
 import { NAV_ITEMS } from './nav'
 
 /**
@@ -34,7 +35,8 @@ export function AppShell() {
             </NavLink>
           ))}
         </nav>
-        <div className="mt-auto">
+        <div className="mt-auto flex flex-col gap-3">
+          <AccountSummary />
           <ServerStatus />
         </div>
       </aside>
@@ -70,6 +72,27 @@ export function AppShell() {
           </NavLink>
         ))}
       </nav>
+    </div>
+  )
+}
+
+function AccountSummary() {
+  const { data: me } = useMe()
+  const logout = useLogout()
+  const navigate = useNavigate()
+  if (!me) return null
+  return (
+    <div className="flex flex-col gap-1 border-t border-line pt-3 text-sm">
+      <span className="truncate text-muted">
+        Signed in as <span className="font-medium text-ink">{me.username}</span>
+      </span>
+      <button
+        type="button"
+        className="self-start text-accent hover:underline"
+        onClick={() => logout.mutate(undefined, { onSettled: () => navigate('/login') })}
+      >
+        Sign out
+      </button>
     </div>
   )
 }
